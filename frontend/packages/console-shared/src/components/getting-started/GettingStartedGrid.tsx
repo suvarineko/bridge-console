@@ -36,21 +36,23 @@ export const GettingStartedGrid: React.FC<GettingStartedGridProps> = ({ onHide, 
         key="action"
         component="button"
         description={t(
-          'console-shared~You can always bring these getting started resources back into view by clicking Show getting started resources in the page heading.',
+          'console-shared~Эту справку можно будет вернуть нажав "Показать краткую справку" в верхнем правом углу.',
+          // 'console-shared~You can always bring these getting started resources back into view by clicking Show getting started resources in the page heading.',
         )}
         onClick={onHide}
         data-test="hide"
       >
-        {t('console-shared~Hide from view')}
+        {t('console-shared~Скрыть')}
       </DropdownItem>,
     );
   }
 
-  const title = t('console-shared~Getting started resources');
+  const title = t('console-shared~Краткая справка пользователя кластера');
   const titleTooltip = (
     <span className="ocs-getting-started-grid__tooltip">
       {t(
-        'console-shared~Use our collection of resources to help you get started with the Console.\n\nNote: This card can be hidden at any time.',
+        'console-shared~Данные ресурсы предназначены для самостоятельного решения большинства простых задач.\n\nПрим.: Это напоминание можно скрыть в любое время.',
+        // 'console-shared~Use our collection of resources to help you get started with the Console.\n\nNote: This card can be hidden at any time.',
       )}
     </span>
   );

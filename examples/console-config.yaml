@@ -1,0 +1,21 @@
+apiVersion: console.openshift.io/v1
+auth:
+  clientID: kubernetes-console
+  clientSecretFile: ./examples/clientSecret.yaml
+  oauthEndpointCAFile: ./examples/ca.crt
+clusterInfo:
+  consoleBaseAddress: https://console.apps.k8s.ose-testing.solution.sbt
+  masterPublicURL: https://api.k8s.ose-testing.solution.sbt:6443
+customization:
+  branding: openshift
+  documentationBaseURL: https://kubernetes.io/docs/
+kind: ConsoleConfig
+monitoringInfo:
+  alertmanagerPublicURL: https://alertmanager.apps.k8s.ose-testing.solution.sbt
+  grafanaPublicURL: https://grafana.apps.k8s.ose-testing.solution.sbt
+  prometheusPublicURL: https://prometheus.apps.k8s.ose-testing.solution.sbt
+providers: {}
+servingInfo:
+  bindAddress: https://[::]:9000
+  certFile: ./examples/tls.crt
+  keyFile: ./examples/tls.key

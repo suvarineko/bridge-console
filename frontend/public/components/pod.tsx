@@ -130,8 +130,10 @@ const fetchPodMetrics = (namespace: string): Promise<UIActions.PodMetrics> => {
     {
       key: 'cpu',
       query: namespace
-        ? `pod:container_cpu_usage:sum{namespace='${namespace}'}`
-        : 'pod:container_cpu_usage:sum',
+        ? `sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{namespace='${namespace}'}) BY (cluster,namespace,pod,prometheus)`
+        // ? `pod:container_cpu_usage:sum{namespace='${namespace}'}`
+        : 'sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate) BY (cluster,namespace,pod,prometheus)',
+        // : 'pod:container_cpu_usage:sum',
     },
   ];
   const promises = metrics.map(
@@ -547,8 +549,10 @@ const PodMetrics: React.FC<PodMetricsProps> = ({ obj }) => {
                 byteDataType={ByteDataTypes.BinaryBytes}
                 namespace={obj.metadata.namespace}
                 query={`sum(container_memory_working_set_bytes{pod='${obj.metadata.name}',namespace='${obj.metadata.namespace}',container='',}) BY (pod, namespace)`}
-                limitQuery={`sum(kube_pod_resource_limit{resource='memory',pod='${obj.metadata.name}',namespace='${obj.metadata.namespace}'})`}
-                requestedQuery={`sum(kube_pod_resource_request{resource='memory',pod='${obj.metadata.name}',namespace='${obj.metadata.namespace}'}) BY (pod, namespace)`}
+                limitQuery={`sum(kube_pod_container_resource_limits{resource='memory',pod='${obj.metadata.name}',namespace='${obj.metadata.namespace}'})`}
+                // limitQuery={`sum(kube_pod_resource_limit{resource='memory',pod='${obj.metadata.name}',namespace='${obj.metadata.namespace}'})`}
+                requestedQuery={`sum(kube_pod_container_resource_requests{resource='memory',pod='${obj.metadata.name}',namespace='${obj.metadata.namespace}'}) BY (pod, namespace)`}
+                // requestedQuery={`sum(kube_pod_resource_request{resource='memory',pod='${obj.metadata.name}',namespace='${obj.metadata.namespace}'}) BY (pod, namespace)`}
               />
             </CardBody>
           </Card>
@@ -563,9 +567,12 @@ const PodMetrics: React.FC<PodMetricsProps> = ({ obj }) => {
                 ariaChartLinkLabel={t('public~View in query browser')}
                 humanize={humanizeCpuCores}
                 namespace={obj.metadata.namespace}
-                query={`pod:container_cpu_usage:sum{pod='${obj.metadata.name}',namespace='${obj.metadata.namespace}'}`}
-                limitQuery={`sum(kube_pod_resource_limit{resource='cpu',pod='${obj.metadata.name}',namespace='${obj.metadata.namespace}'})`}
-                requestedQuery={`sum(kube_pod_resource_request{resource='cpu',pod='${obj.metadata.name}',namespace='${obj.metadata.namespace}'}) BY (pod, namespace)`}
+                query={`sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{pod='${obj.metadata.name}',namespace='${obj.metadata.namespace}'})  BY (cluster,namespace,pod,prometheus)`}
+                // query={`pod:container_cpu_usage:sum{pod='${obj.metadata.name}',namespace='${obj.metadata.namespace}'}`}
+                limitQuery={`sum(kube_pod_container_resource_limits{resource='cpu',pod='${obj.metadata.name}',namespace='${obj.metadata.namespace}'})`}
+                // limitQuery={`sum(kube_pod_resource_limit{resource='cpu',pod='${obj.metadata.name}',namespace='${obj.metadata.namespace}'})`}
+                requestedQuery={`sum(kube_pod_container_resource_requests{resource='cpu',pod='${obj.metadata.name}',namespace='${obj.metadata.namespace}'}) BY (pod, namespace)`}
+                // requestedQuery={`sum(kube_pod_resource_request{resource='cpu',pod='${obj.metadata.name}',namespace='${obj.metadata.namespace}'}) BY (pod, namespace)`}
               />
             </CardBody>
           </Card>
@@ -581,7 +588,8 @@ const PodMetrics: React.FC<PodMetricsProps> = ({ obj }) => {
                 humanize={humanizeBinaryBytes}
                 byteDataType={ByteDataTypes.BinaryBytes}
                 namespace={obj.metadata.namespace}
-                query={`pod:container_fs_usage_bytes:sum{pod='${obj.metadata.name}',namespace='${obj.metadata.namespace}'}`}
+                query={`sum(container_fs_usage_bytes{pod='${obj.metadata.name}',namespace='${obj.metadata.namespace}'}) BY (cluster,namespace,pod,prometheus)`}
+                // query={`pod:container_fs_usage_bytes:sum{pod='${obj.metadata.name}',namespace='${obj.metadata.namespace}'}`}
               />
             </CardBody>
           </Card>
@@ -596,7 +604,8 @@ const PodMetrics: React.FC<PodMetricsProps> = ({ obj }) => {
                 ariaChartLinkLabel={t('public~View in query browser')}
                 humanize={humanizeDecimalBytesPerSec}
                 namespace={obj.metadata.namespace}
-                query={`(sum(irate(container_network_receive_bytes_total{pod='${obj.metadata.name}', namespace='${obj.metadata.namespace}'}[5m])) by (pod, namespace, interface)) + on(namespace,pod,interface) group_left(network_name) ( pod_network_name_info )`}
+                query={`(sum(irate(container_network_receive_bytes_total{interface='eth0',pod='${obj.metadata.name}', namespace='${obj.metadata.namespace}'}[5m])) by (pod, namespace, interface))`}
+                // query={`(sum(irate(container_network_receive_bytes_total{pod='${obj.metadata.name}', namespace='${obj.metadata.namespace}'}[5m])) by (pod, namespace, interface)) + on(namespace,pod,interface) group_left(network_name) ( pod_network_name_info )`}
                 description={getNetworkName}
               />
             </CardBody>
@@ -612,7 +621,8 @@ const PodMetrics: React.FC<PodMetricsProps> = ({ obj }) => {
                 ariaChartLinkLabel={t('public~View in query browser')}
                 humanize={humanizeDecimalBytesPerSec}
                 namespace={obj.metadata.namespace}
-                query={`(sum(irate(container_network_transmit_bytes_total{pod='${obj.metadata.name}', namespace='${obj.metadata.namespace}'}[5m])) by (pod, namespace, interface)) + on(namespace,pod,interface) group_left(network_name) ( pod_network_name_info )`}
+                query={`(sum(irate(container_network_transmit_bytes_total{interface='eth0',pod='${obj.metadata.name}', namespace='${obj.metadata.namespace}'}[5m])) by (pod, namespace, interface))`}
+                // query={`(sum(irate(container_network_transmit_bytes_total{pod='${obj.metadata.name}', namespace='${obj.metadata.namespace}'}[5m])) by (pod, namespace, interface)) + on(namespace,pod,interface) group_left(network_name) ( pod_network_name_info )`}
                 description={getNetworkName}
               />
             </CardBody>

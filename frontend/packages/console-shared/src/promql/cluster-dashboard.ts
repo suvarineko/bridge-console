@@ -38,7 +38,7 @@ const top25Queries = {
     `
       topk(25, sort_desc(
         (
-          sum(avg_over_time(pod:container_cpu_usage:sum{container="",pod!=""}[5m])) BY (pod, namespace)
+          sum(avg_over_time(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{container!="",pod!=""}[5m])) BY (pod, namespace)
           *
           on(pod,namespace) group_left(node) (node_namespace_pod:kube_pod_info:)
         )
@@ -173,7 +173,7 @@ const top25Queries = {
       topk(25, sort_desc(
         sum by (namespace) (
           (
-            sum(avg_over_time(pod:container_cpu_usage:sum{container="",pod!=""}[5m])) BY (namespace, pod)
+            sum(avg_over_time(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{container!="",pod!=""}[5m])) BY (namespace, pod)
             *
             on(pod,namespace) group_left(node) (node_namespace_pod:kube_pod_info:)
           )
@@ -283,7 +283,7 @@ const overviewQueries = {
   [OverviewQuery.MEMORY_REQUESTS]: _.template(
     `
       sum(
-        kube_pod_resource_request{resource="memory"}
+        kube_pod_container_resource_requests{resource="memory"}
         *
         on(node) group_left(role) (
           max by (node) (kube_node_role{role=~"<%= nodeType %>"})
@@ -331,7 +331,7 @@ const overviewQueries = {
   [OverviewQuery.CPU_REQUESTS]: _.template(
     `
       sum(
-        kube_pod_resource_request{resource="cpu"}
+        kube_pod_container_resource_requests{resource="cpu"}
         *
         on(node) group_left(role) (
           max by (node) (kube_node_role{role=~"<%= nodeType %>"})
@@ -367,14 +367,13 @@ const overviewQueries = {
   ),
   [OverviewQuery.POD_UTILIZATION]: _.template(
     `
-      count(
-        (
-          topk without(uid) (1, kube_running_pod_ready)
-          *
-          ignoring(node,uid) group_right node_namespace_pod:kube_pod_info:
-        )
+      count( 
+        node_namespace_pod:kube_pod_info:
         *
-        on(node) group_left() (max by (node) (kube_node_role{role=~"<%= nodeType %>"}))
+        on(node) group_left()
+          (
+            max by (node) (kube_node_role{role=~".+"})
+          )
       )
     `,
   ),

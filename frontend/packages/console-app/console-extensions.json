@@ -256,12 +256,9 @@
       "field": {
         "type": "dropdown",
         "userSettingsKey": "console.theme",
-        "defaultValue": "systemDefault",
+        "defaultValue": "light",
         "options": [
-          {
-            "value": "systemDefault",
-            "label": "%console-app~System default%"
-          },
+          { "value": "systemDefault", "label": "%console-app~System default%" },
           { "value": "light", "label": "%console-app~Light%" },
           { "value": "dark", "label": "%console-app~Dark%" }
         ]
@@ -469,7 +466,7 @@
       "perspective": "admin",
       "section": "home",
       "id": "projects",
-      "insertAfter": "dashboards",
+      "insertAfter": "namespaces",
       "name": "%console-app~Projects%",
       "model": {
         "group": "project.openshift.io",
@@ -478,6 +475,21 @@
       }
     },
     "flags": { "required": ["OPENSHIFT"] }
+  },
+  {
+    "type": "console.navigation/resource-cluster",
+    "properties": {
+      "perspective": "admin",
+      "section": "home",
+      "id": "namespaces",
+      "insertAfter": "dashboards",
+      "name": "%console-app~Namespaces%",
+      "model": {
+        "version": "v1",
+        "kind": "Namespace"
+      }
+    },
+    "flags": { "required": ["CAN_LIST_NS"] }
   },
   {
     "type": "console.navigation/href",
@@ -1091,28 +1103,28 @@
     },
     "flags": { "required": ["CLUSTER_VERSION"] }
   },
-  {
-    "type": "console.navigation/resource-cluster",
-    "properties": {
-      "perspective": "admin",
-      "section": "administration",
-      "id": "namespaces",
-      "insertAfter": "clustersettings",
-      "name": "%console-app~Namespaces%",
-      "model": {
-        "version": "v1",
-        "kind": "Namespace"
-      }
-    },
-    "flags": { "required": ["CAN_LIST_NS"] }
-  },
+  // {
+  //   "type": "console.navigation/resource-cluster",
+  //   "properties": {
+  //     "perspective": "admin",
+  //     "section": "administration",
+  //     "id": "namespaces",
+  //     "insertAfter": "clustersettings",
+  //     "name": "%console-app~Namespaces%",
+  //     "model": {
+  //       "version": "v1",
+  //       "kind": "Namespace"
+  //     }
+  //   },
+  //   "flags": { "required": ["CAN_LIST_NS"] }
+  // },
   {
     "type": "console.navigation/resource-ns",
     "properties": {
       "perspective": "admin",
       "section": "administration",
       "id": "resourcequotas",
-      "insertAfter": "namespaces",
+      "insertAfter": "clustersettings",
       "name": "%console-app~ResourceQuotas%",
       "startsWith": ["clusterresourcequotas"],
       "model": {

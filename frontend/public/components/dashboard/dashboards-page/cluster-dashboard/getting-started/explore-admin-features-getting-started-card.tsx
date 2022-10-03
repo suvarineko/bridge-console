@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as semver from 'semver';
 import { useTranslation } from 'react-i18next';
-import { FlagIcon } from '@patternfly/react-icons';
+// import { FlagIcon } from '@patternfly/react-icons';
 
 import { useOpenShiftVersion } from '@console/shared/src';
 import {
@@ -17,15 +17,33 @@ export const ExploreAdminFeaturesGettingStartedCard: React.FC = () => {
   const version = parsed ? `${parsed.major}.${parsed.minor}` : '';
 
   const links: GettingStartedLink[] = [
+    // {
+    //   id: 'api-explorer',
+    //   title: t('public~API Explorer'),
+    //   href: '/api-explorer',
+    // },
+    // {
+    //   id: 'operatorhub',
+    //   title: t('public~OperatorHub'),
+    //   href: '/operatorhub',
+    // },
     {
-      id: 'api-explorer',
-      title: t('public~API Explorer'),
-      href: '/api-explorer',
+      id: 'userdoc',
+      title: t('public~FAQ пользователя кластера'),
+      href: 'https://dzo.sw.sbc.space/wiki/display/OSAD/Kubernetes',
+      external: true
     },
     {
-      id: 'operatorhub',
-      title: t('public~OperatorHub'),
-      href: '/operatorhub',
+      id: 'k8sdoc',
+      title: t('public~Документация kubernetes'),
+      href: 'https://v1-21.docs.kubernetes.io/docs/tutorials/',
+      external: true
+    },
+    {
+      id: 'istiodoc',
+      title: t('public~Документация Istio'),
+      href: 'https://istio.io/latest/docs/ops/best-practices/',
+      external: true
     },
   ];
 
@@ -39,12 +57,14 @@ export const ExploreAdminFeaturesGettingStartedCard: React.FC = () => {
   return (
     <GettingStartedCard
       id="admin-features"
-      icon={<FlagIcon color="var(--co-global--palette--orange-400)" aria-hidden="true" />}
-      title={t('public~Explore new admin features')}
+      // icon={<FlagIcon color="var(--co-global--palette--orange-400)" aria-hidden="true" />}
+      title={t('public~')}
+      // title={t('public~Explore new admin features')}
       titleColor={'var(--co-global--palette--orange-400)'}
-      description={t('public~Explore new features and resources within the admin perspective.')}
+      // description={t('public~Explore new features and resources within the admin perspective.')}
       links={links}
       moreLink={moreLink}
     />
   );
 };
+

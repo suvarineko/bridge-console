@@ -8,5 +8,5 @@ export enum GettingStartedShowState {
 
 export const useGettingStartedShowState = (
   key: string,
-  defaultValue = GettingStartedShowState.SHOW,
+  defaultValue = GettingStartedShowState.HIDE,
 ) => useUserSettings<GettingStartedShowState>(key, defaultValue, true);

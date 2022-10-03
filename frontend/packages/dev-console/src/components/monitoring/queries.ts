@@ -37,7 +37,7 @@ export const metricsQuery = (t: TFunction) => ({
 export const monitoringDashboardQueries = (t: TFunction): MonitoringQuery[] => [
   {
     query: _.template(
-      `sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{namespace='<%= namespace %>'}) by (pod)`,
+      `sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{namespace='<%= namespace %>'}) by (pod)`,
     ),
     chartType: GraphTypes.area,
     title: t('devconsole~CPU usage'),
@@ -124,7 +124,7 @@ export const topWorkloadMetricsQueries = (t: TFunction): MonitoringQuery[] => [
     humanize: humanizeCpuCores,
     byteDataType: ByteDataTypes.BinaryBytes,
     query: _.template(
-      `sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{namespace='<%= namespace %>'}
+      `sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{namespace='<%= namespace %>'}
           * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{
           namespace='<%= namespace %>', workload='<%= workloadName %>', workload_type='<%= workloadType %>'}) by (pod)`,
     ),
@@ -232,7 +232,8 @@ const topMetricsQueries = (t: TFunction) => ({
   PODS_BY_CPU: getMetricsQuery('cpu_usage', t),
   PODS_BY_MEMORY: getMetricsQuery('memory_usage', t),
   PODS_BY_FILESYSTEM: _.template(
-    `topk(25, sort_desc(sum(pod:container_fs_usage_bytes:sum{container="",pod!="",namespace='<%= namespace %>'}) BY (pod, namespace)))`,
+    `topk(25, sort_desc(sum(container_fs_usage_bytes{container!="",pod!="",namespace='<%= namespace %>'}) BY (pod, namespace)))`,
+    // `topk(25, sort_desc(sum(pod:container_fs_usage_bytes:sum{container="",pod!="",namespace='<%= namespace %>'}) BY (pod, namespace)))`,
   ),
   PODS_BY_NETWORK_IN: getMetricsQuery('receive_bandwidth', t),
   PODS_BY_NETWORK_OUT: getMetricsQuery('transmit_bandwidth', t),

@@ -175,7 +175,8 @@ const fetchNamespaceMetrics = () => {
     },
     {
       key: 'cpu',
-      query: 'namespace:container_cpu_usage:sum',
+      query: 'sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate) BY (cluster,namespace,prometheus)',
+      // query: 'namespace:container_cpu_usage:sum',
     },
   ];
   const promises = metrics.map(({ key, query }) => {
@@ -943,7 +944,8 @@ export const NamespaceLineCharts = ({ ns }) => {
           title={t('public~CPU usage')}
           humanize={humanizeCpuCores}
           namespace={ns.metadata.name}
-          query={`namespace:container_cpu_usage:sum{namespace='${ns.metadata.name}'}`}
+          query={`sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{namespace='${ns.metadata.name}'}) BY (cluster,namespace,prometheus)`}
+          // query={`namespace:container_cpu_usage:sum{namespace='${ns.metadata.name}'}`}
         />
       </div>
       <div className="col-md-6 col-sm-12">

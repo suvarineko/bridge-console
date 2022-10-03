@@ -23,15 +23,15 @@ export const RestoreGettingStartedButton: React.FC<RestoreGettingStartedButtonPr
       onClick={() => {
         setShowState(GettingStartedShowState.SHOW);
       }}
-      onClose={(event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        setShowState(GettingStartedShowState.DISAPPEAR);
-      }}
+      // onClose={(event) => {
+      //   event.preventDefault();
+      //   event.stopPropagation();
+      //   setShowState(GettingStartedShowState.DISAPPEAR);
+      // }}
       style={{ cursor: 'pointer' }}
       data-test="restore-getting-started"
     >
-      {t('console-shared~Show getting started resources')}
+      {t('console-shared~Показать краткую справку')}
     </Label>
   );
 };

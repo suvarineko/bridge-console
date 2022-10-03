@@ -695,7 +695,8 @@ func main() {
 		&url.URL{
 			Scheme: k8sEndpoint.Scheme,
 			Host:   k8sEndpoint.Host,
-			Path:   k8sEndpoint.Path + "/api/v1/namespaces/openshift-config-managed/configmaps",
+			Path:   k8sEndpoint.Path + "/api/v1/namespaces/openshift-monitoring/configmaps",
+			// Path:   k8sEndpoint.Path + "/api/v1/namespaces/openshift-config-managed/configmaps",
 			RawQuery: url.Values{
 				"labelSelector": {"console.openshift.io/dashboard=true"},
 			}.Encode(),
