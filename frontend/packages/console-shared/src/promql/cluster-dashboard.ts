@@ -217,7 +217,7 @@ const top25Queries = {
     `
       topk(25, sort_desc(
         count by (namespace) (
-            topk without(uid) (1, kube_running_pod_ready)
+            topk without(uid) (1, node_namespace_pod:kube_pod_info:)
             *
             ignoring(node,uid) group_right node_namespace_pod:kube_pod_info:
           *

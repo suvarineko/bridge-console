@@ -474,7 +474,7 @@
         "kind": "Project"
       }
     },
-    "flags": { "required": ["OPENSHIFT"] }
+    "flags": { "required": ["OPENSHIFT", "CAN_LIST_PV"] }
   },
   {
     "type": "console.navigation/resource-cluster",

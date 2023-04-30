@@ -6,14 +6,14 @@ import { Card, CardBody, CardHeader, CardTitle, Stack, StackItem } from '@patter
 import {
   PodModel,
   DeploymentModel,
-  DeploymentConfigModel,
+  // DeploymentConfigModel,
   PersistentVolumeClaimModel,
   ServiceModel,
   StatefulSetModel,
-  RouteModel,
+  // RouteModel,
   ConfigMapModel,
   SecretModel,
-  VolumeSnapshotModel,
+  // VolumeSnapshotModel,
 } from '../../../models';
 import {
   ResourceInventoryItem,
@@ -22,7 +22,7 @@ import {
 import {
   getPodStatusGroups,
   getPVCStatusGroups,
-  getVSStatusGroups,
+  // getVSStatusGroups,
 } from '@console/shared/src/components/dashboard/inventory-card/utils';
 import { FirehoseResult, FirehoseResource, useAccessReview } from '../../utils';
 import { K8sKind, referenceForModel } from '../../../module/k8s';
@@ -155,7 +155,7 @@ export const InventoryCard = () => {
       <CardBody>
         <Stack hasGutter>
           <ProjectInventoryItem projectName={projectName} model={DeploymentModel} />
-          <ProjectInventoryItem projectName={projectName} model={DeploymentConfigModel} />
+          {/*<ProjectInventoryItem projectName={projectName} model={DeploymentConfigModel} />*/}
           <ProjectInventoryItem projectName={projectName} model={StatefulSetModel} />
           <ProjectInventoryItem
             projectName={projectName}
@@ -168,14 +168,14 @@ export const InventoryCard = () => {
             mapper={getPVCStatusGroups}
           />
           <ProjectInventoryItem projectName={projectName} model={ServiceModel} />
-          <ProjectInventoryItem projectName={projectName} model={RouteModel} />
+          {/*<ProjectInventoryItem projectName={projectName} model={RouteModel} />*/}
           <ProjectInventoryItem projectName={projectName} model={ConfigMapModel} />
           {canListSecrets && <ProjectInventoryItem projectName={projectName} model={SecretModel} />}
-          <ProjectInventoryItem
+          {/*<ProjectInventoryItem
             projectName={projectName}
             model={VolumeSnapshotModel}
             mapper={getVSStatusGroups}
-          />
+          />*/}
           {itemExtensions.map((item) => (
             <ProjectInventoryItem
               key={item.properties.model.kind}

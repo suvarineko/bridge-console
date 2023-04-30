@@ -20,7 +20,8 @@ export enum ProjectQueries {
 
 const queries = {
   [ProjectQueries.CPU_USAGE]: _.template(
-    `namespace:container_cpu_usage:sum{namespace='<%= project %>'}`,
+    // `namespace:container_cpu_usage:sum{namespace='<%= project %>'}`,
+    `sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{namespace='<%= project %>'}) BY (cluster,namespace,prometheus)`,
   ),
   [ProjectQueries.CPU_REQUESTS]: _.template(
     `sum(kube_pod_resource_request{resource="cpu", namespace="<%= project %>"}) by (namespace)`,
@@ -32,10 +33,12 @@ const queries = {
     `sum(kube_pod_resource_request{resource="memory", namespace="<%= project %>"}) by (namespace)`,
   ),
   [ProjectQueries.POD_COUNT]: _.template(
-    `count(kube_running_pod_ready{namespace='<%= project %>'}) BY (namespace)`,
+    `count(node_namespace_pod:kube_pod_info:{namespace='<%= project %>'}) BY (namespace)`,
+    // `count(kube_running_pod_ready{namespace='<%= project %>'}) BY (namespace)`,
   ),
   [ProjectQueries.FILESYSTEM_USAGE]: _.template(
-    `sum(pod:container_fs_usage_bytes:sum{container="",pod!="",namespace='<%= project %>'}) BY (namespace)`,
+    // `sum(pod:container_fs_usage_bytes:sum{container="",pod!="",namespace='<%= project %>'}) BY (namespace)`,
+    `sum(container_fs_usage_bytes{container!="",pod!="",namespace='<%= project %>'}) BY (namespace)`,
   ),
   [ProjectQueries.NETWORK_IN_UTILIZATION]: _.template(
     `sum(rate(container_network_receive_bytes_total{container="POD",pod!="",namespace='<%= project %>'}[5m])) BY (namespace)`,

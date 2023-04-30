@@ -27,12 +27,12 @@ export const ExploreAdminFeaturesGettingStartedCard: React.FC = () => {
     //   title: t('public~OperatorHub'),
     //   href: '/operatorhub',
     // },
-    {
-      id: 'userdoc',
-      title: t('public~FAQ пользователя кластера'),
-      href: 'https://dzo.sw.sbc.space/wiki/display/OSAD/Kubernetes',
-      external: true
-    },
+    // {
+    //   id: 'userdoc',
+    //   title: t('public~FAQ пользователя кластера'),
+    //   href: 'https://dzo.sw.sbc.space/wiki/display/OSAD/Kubernetes',
+    //   external: true
+    // },
     {
       id: 'k8sdoc',
       title: t('public~Документация kubernetes'),
