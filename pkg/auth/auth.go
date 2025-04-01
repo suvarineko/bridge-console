@@ -62,6 +62,7 @@ type Authenticator struct {
 	cookiePath    string
 	refererURL    *url.URL
 	secureCookies bool
+	cookieDomain  string
 }
 
 type SpecialAuthURLs struct {
@@ -114,6 +115,9 @@ type Config struct {
 	CookiePath    string
 	SecureCookies bool
 	ClusterName   string
+	// CookieDomain is the domain for the session cookie. If set to a domain starting with a dot
+	// (e.g. ".example.com"), the cookie will be valid for all subdomains of that domain.
+	CookieDomain  string
 }
 
 func newHTTPClient(issuerCA string, includeSystemRoots bool) (*http.Client, error) {
@@ -199,6 +203,7 @@ func NewAuthenticator(ctx context.Context, c *Config) (*Authenticator, error) {
 					cookiePath:    c.CookiePath,
 					secureCookies: c.SecureCookies,
 					clusterName:   c.ClusterName,
+					cookieDomain:  c.CookieDomain,
 				})
 			}
 		default:
@@ -209,6 +214,7 @@ func NewAuthenticator(ctx context.Context, c *Config) (*Authenticator, error) {
 				clientID:      c.ClientID,
 				cookiePath:    c.CookiePath,
 				secureCookies: c.SecureCookies,
+				cookieDomain:  c.CookieDomain,
 			})
 			a.userFunc = func(r *http.Request) (*User, error) {
 				if oidcAuthSource == nil {
@@ -301,6 +307,7 @@ func newUnstartedAuthenticator(c *Config) (*Authenticator, error) {
 		cookiePath:    c.CookiePath,
 		refererURL:    refUrl,
 		secureCookies: c.SecureCookies,
+		cookieDomain:  c.CookieDomain,
 	}, nil
 }
 
@@ -330,6 +337,11 @@ func (a *Authenticator) LoginFunc(w http.ResponseWriter, r *http.Request) {
 		Secure:   a.secureCookies,
 		// Make sure cookie path matches multi-cluster login paths
 		Path: "/",
+	}
+
+	// Set the cookie domain if configured
+	if a.cookieDomain != "" {
+		cookie.Domain = a.cookieDomain
 	}
 	http.SetCookie(w, &cookie)
 	http.Redirect(w, r, a.getOAuth2Config().AuthCodeURL(state), http.StatusSeeOther)
@@ -468,6 +480,11 @@ func (a *Authenticator) SetCSRFCookie(path string, w *http.ResponseWriter) {
 		Path:     path,
 		Secure:   a.secureCookies,
 		SameSite: http.SameSiteLaxMode,
+	}
+
+	// Set the cookie domain if configured
+	if a.cookieDomain != "" {
+		cookie.Domain = a.cookieDomain
 	}
 
 	http.SetCookie(*w, &cookie)

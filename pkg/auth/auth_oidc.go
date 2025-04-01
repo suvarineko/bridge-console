@@ -21,6 +21,7 @@ type oidcAuth struct {
 
 	cookiePath    string
 	secureCookies bool
+	cookieDomain  string
 }
 
 type oidcConfig struct {
@@ -29,6 +30,7 @@ type oidcConfig struct {
 	clientID      string
 	cookiePath    string
 	secureCookies bool
+	cookieDomain  string
 }
 
 func newOIDCAuth(ctx context.Context, c *oidcConfig) (oauth2.Endpoint, *oidcAuth, error) {
@@ -45,6 +47,7 @@ func newOIDCAuth(ctx context.Context, c *oidcConfig) (oauth2.Endpoint, *oidcAuth
 		sessions:      NewSessionStore(32768),
 		cookiePath:    c.cookiePath,
 		secureCookies: c.secureCookies,
+		cookieDomain:  c.cookieDomain,
 	}, nil
 }
 
@@ -78,6 +81,12 @@ func (o *oidcAuth) login(w http.ResponseWriter, token *oauth2.Token) (*loginStat
 		Path:     o.cookiePath,
 		Secure:   o.secureCookies,
 	}
+
+	// Set the cookie domain if configured
+	if o.cookieDomain != "" {
+		cookie.Domain = o.cookieDomain
+	}
+
 	http.SetCookie(w, &cookie)
 
 	o.sessions.pruneSessions()
@@ -98,6 +107,12 @@ func (o *oidcAuth) logout(w http.ResponseWriter, r *http.Request) {
 		Path:     o.cookiePath,
 		Secure:   o.secureCookies,
 	}
+
+	// Set the cookie domain if configured
+	if o.cookieDomain != "" {
+		cookie.Domain = o.cookieDomain
+	}
+
 	http.SetCookie(w, &cookie)
 	w.WriteHeader(http.StatusNoContent)
 }

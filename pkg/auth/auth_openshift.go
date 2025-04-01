@@ -22,6 +22,7 @@ type openShiftAuth struct {
 	secureCookies bool
 	specialURLs   SpecialAuthURLs
 	clusterName   string
+	cookieDomain  string
 }
 
 type openShiftConfig struct {
@@ -31,6 +32,7 @@ type openShiftConfig struct {
 	cookiePath    string
 	secureCookies bool
 	clusterName   string
+	cookieDomain  string
 }
 
 func validateAbsURL(value string) error {
@@ -118,6 +120,7 @@ func newOpenShiftAuth(ctx context.Context, c *openShiftConfig) (oauth2.Endpoint,
 				kubeAdminLogoutURL,
 			},
 			c.clusterName,
+			c.cookieDomain,
 		}, nil
 }
 
@@ -153,6 +156,11 @@ func (o *openShiftAuth) login(w http.ResponseWriter, token *oauth2.Token) (*logi
 		SameSite: http.SameSiteLaxMode,
 	}
 
+	// Set the cookie domain if configured
+	if o.cookieDomain != "" {
+		cookie.Domain = o.cookieDomain
+	}
+
 	http.SetCookie(w, &cookie)
 	return ls, nil
 }
@@ -168,6 +176,11 @@ func (o *openShiftAuth) logout(w http.ResponseWriter, r *http.Request) {
 		HttpOnly: true,
 		Path:     o.cookiePath,
 		Secure:   o.secureCookies,
+	}
+
+	// Set the cookie domain if configured
+	if o.cookieDomain != "" {
+		cookie.Domain = o.cookieDomain
 	}
 	http.SetCookie(w, &cookie)
 	w.WriteHeader(http.StatusNoContent)

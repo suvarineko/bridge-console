@@ -42,6 +42,16 @@ to. OpenShift 4.x clusters can be installed using the
 You can also use [CodeReady Containers](https://github.com/code-ready/crc)
 for local installs, or native Kubernetes clusters.
 
+#### Cross-domain Cookies
+
+When deploying the console across multiple domains or subdomains, you can configure session cookies to be valid across all of them by setting the `-cookie-domain` flag. For instance, to allow the session cookie to be valid across all subdomains of example.com, you would set `-cookie-domain=.example.com` when starting the bridge.
+
+```
+./bin/bridge -cookie-domain=.example.com
+```
+
+This will make the `openshift-session-token` cookie valid for all subdomains of example.com.
+
 #### OpenShift (no authentication)
 
 For local development, you can disable OAuth and run bridge with an OpenShift

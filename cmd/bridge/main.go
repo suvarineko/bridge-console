@@ -79,6 +79,7 @@ func main() {
 	fUserAuthLogoutRedirect := fs.String("user-auth-logout-redirect", "", "Optional redirect URL on logout needed for some single sign-on identity providers.")
 
 	fInactivityTimeout := fs.Int("inactivity-timeout", 0, "Number of seconds, after which user will be logged out if inactive. Ignored if less than 300 seconds (5 minutes).")
+	fCookieDomain := fs.String("cookie-domain", "", "Domain attribute for cookies. If set to a domain starting with a dot (e.g. \".example.com\"), the cookie will be valid for all subdomains of that domain.")
 
 	fK8sMode := fs.String("k8s-mode", "in-cluster", "in-cluster | off-cluster")
 	fK8sModeOffClusterEndpoint := fs.String("k8s-mode-off-cluster-endpoint", "", "URL of the Kubernetes API server.")
@@ -379,6 +380,7 @@ func main() {
 	var k8sEndpoint *url.URL
 	switch *fK8sMode {
 	case "in-cluster":
+		// #!!!
 		k8sEndpoint = &url.URL{Scheme: "https", Host: "kubernetes.default.svc"}
 
 		var err error
@@ -614,6 +616,7 @@ func main() {
 			ClientSecret: oidcClientSecret,
 			RedirectURL:  proxy.SingleJoiningSlash(srv.BaseURL.String(), server.AuthLoginCallbackEndpoint),
 			Scope:        scopes,
+			CookieDomain: *fCookieDomain,
 
 			// Use the k8s CA file for OpenShift OAuth metadata discovery.
 			// This might be different than IssuerCA.
@@ -658,6 +661,7 @@ func main() {
 					ClientSecret: managedCluster.OAuth.ClientSecret,
 					RedirectURL:  proxy.SingleJoiningSlash(srv.BaseURL.String(), fmt.Sprintf("%s/%s", server.AuthLoginCallbackEndpoint, managedCluster.Name)),
 					Scope:        scopes,
+					CookieDomain: *fCookieDomain,
 
 					// Use the k8s CA file for OpenShift OAuth metadata discovery.
 					// This might be different than IssuerCA.
