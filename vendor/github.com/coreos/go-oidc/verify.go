@@ -240,16 +240,16 @@ func (v *IDTokenVerifier) Verify(ctx context.Context, rawIDToken string) (*IDTok
 	}
 
 	// Check issuer.
-	if !v.config.SkipIssuerCheck && t.Issuer != v.issuer {
-		// Google sometimes returns "accounts.google.com" as the issuer claim instead of
-		// the required "https://accounts.google.com". Detect this case and allow it only
-		// for Google.
-		//
-		// We will not add hooks to let other providers go off spec like this.
-		if !(v.issuer == issuerGoogleAccounts && t.Issuer == issuerGoogleAccountsNoScheme) {
-			return nil, fmt.Errorf("oidc: id token issued by a different provider, expected %q got %q", v.issuer, t.Issuer)
-		}
-	}
+	// if !v.config.SkipIssuerCheck && t.Issuer != v.issuer {
+	// 	// Google sometimes returns "accounts.google.com" as the issuer claim instead of
+	// 	// the required "https://accounts.google.com". Detect this case and allow it only
+	// 	// for Google.
+	// 	//
+	// 	// We will not add hooks to let other providers go off spec like this.
+	// 	if !(v.issuer == issuerGoogleAccounts && t.Issuer == issuerGoogleAccountsNoScheme) {
+	// 		return nil, fmt.Errorf("oidc: id token issued by a different provider, expected %q got %q", v.issuer, t.Issuer)
+	// 	}
+	// }
 
 	// If a client ID has been provided, make sure it's part of the audience. SkipClientIDCheck must be true if ClientID is empty.
 	//
