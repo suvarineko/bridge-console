@@ -14,6 +14,7 @@ export const clusterVersionProps: ClusterVersionKind = {
     channel: 'stable-4.5',
     clusterID: '727841c6-242d-4592-90d1-699925c4cfba',
     upstream: 'https://api.openshift.com/api/upgrades_info/v1/graph',
+    bridgeBoxVersion: 'none',
   },
   status: {
     availableUpdates: [
@@ -88,6 +89,7 @@ export const clusterVersionUpdatingProps: ClusterVersionKind = {
       version: '4.5.4',
     },
     upstream: 'https://api.openshift.com/api/upgrades_info/v1/graph',
+    bridgeBoxVersion: 'none',
   },
   status: {
     availableUpdates: [
@@ -165,6 +167,7 @@ export const clusterVersionUpgradeableFalseProps: ClusterVersionKind = {
     channel: 'stable-4.5',
     clusterID: '727841c6-242d-4592-90d1-699925c4cfba',
     upstream: 'https://api.openshift.com/api/upgrades_info/v1/graph',
+    bridgeBoxVersion: 'none',
   },
   status: {
     availableUpdates: [
@@ -247,6 +250,7 @@ export const clusterVersionUpdatedProps: ClusterVersionKind = {
       version: '4.5.4',
     },
     upstream: 'https://api.openshift.com/api/upgrades_info/v1/graph',
+    bridgeBoxVersion: 'none',
   },
   status: {
     availableUpdates: null,

@@ -40,6 +40,7 @@ const AboutModalItems: React.FC<AboutModalItemsProps> = ({ closeAboutModal }) =>
 
   const clusterID = getClusterID(clusterVersion);
   const channel: string = clusterVersion?.spec?.channel;
+  const bridgeBoxVersion: string = clusterVersion?.spec?.bridgeBoxVersion;
   const openshiftVersion = getOpenShiftVersion(clusterVersion);
 
   return (
@@ -73,6 +74,14 @@ const AboutModalItems: React.FC<AboutModalItemsProps> = ({ closeAboutModal }) =>
           <TextListItem component="dd" className="co-select-to-copy">
             {kubernetesVersion}
           </TextListItem>
+          {bridgeBoxVersion && (
+            <>
+              <TextListItem component="dt">{t('public~Bridge-box version')}</TextListItem>
+              <TextListItem component="dd" className="co-select-to-copy">
+                {bridgeBoxVersion}
+              </TextListItem>
+            </>
+          )}
           {channel && (
             <>
               <TextListItem component="dt">{t('public~Channel')}</TextListItem>
