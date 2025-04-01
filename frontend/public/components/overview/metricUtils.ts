@@ -26,7 +26,7 @@ export const fetchOverviewMetrics = (
 
   const queries = {
     memory: `sum(container_memory_working_set_bytes{namespace='${namespace}',container='',pod!=''}) BY (pod, namespace)`,
-    cpu: `sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{namespace='${namespace}'}) BY (cluster,namespace,pod,prometheus)`,
+    cpu: `sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{namespace='${namespace}'}) BY (cluster,namespace,pod,prometheus)`,
     // cpu: `pod:container_cpu_usage:sum{namespace="${namespace}"}`,
   };
 

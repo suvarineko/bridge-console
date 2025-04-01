@@ -17,7 +17,7 @@ const queries = {
   [VMQueries.CPU_USAGE]: _.template(
     // TODO verify; use seconds or milicores?
     // `kubevirt_vmi_vcpu_seconds{exported_namespace='<%= namespace %>',name='<%= vmName %>'}`,
-    `sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{pod='<%= launcherPodName %>'}) BY (cluster,namespace,pod,prometheus)`,
+    `sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{pod='<%= launcherPodName %>'}) BY (cluster,namespace,pod,prometheus)`,
   ),
   [VMQueries.MEMORY_USAGE]: _.template(`kubevirt_vmi_memory_resident_bytes{name='<%= vmName %>'}`),
   [VMQueries.FILESYSTEM_READ_USAGE]: _.template(

@@ -175,7 +175,7 @@ const fetchNamespaceMetrics = () => {
     },
     {
       key: 'cpu',
-      query: 'sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate) BY (cluster,namespace,prometheus)',
+      query: 'sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate) BY (cluster,namespace,prometheus)',
       // query: 'namespace:container_cpu_usage:sum',
     },
   ];
@@ -944,7 +944,7 @@ export const NamespaceLineCharts = ({ ns }) => {
           title={t('public~CPU usage')}
           humanize={humanizeCpuCores}
           namespace={ns.metadata.name}
-          query={`sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{namespace='${ns.metadata.name}'}) BY (cluster,namespace,prometheus)`}
+          query={`sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{namespace='${ns.metadata.name}'}) BY (cluster,namespace,prometheus)`}
           // query={`namespace:container_cpu_usage:sum{namespace='${ns.metadata.name}'}`}
         />
       </div>

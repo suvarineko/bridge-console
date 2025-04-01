@@ -130,9 +130,9 @@ const fetchPodMetrics = (namespace: string): Promise<UIActions.PodMetrics> => {
     {
       key: 'cpu',
       query: namespace
-        ? `sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{namespace='${namespace}'}) BY (cluster,namespace,pod,prometheus)`
+        ? `sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{namespace='${namespace}'}) BY (cluster,namespace,pod,prometheus)`
         // ? `pod:container_cpu_usage:sum{namespace='${namespace}'}`
-        : 'sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate) BY (cluster,namespace,pod,prometheus)',
+        : 'sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate) BY (cluster,namespace,pod,prometheus)',
         // : 'pod:container_cpu_usage:sum',
     },
   ];
@@ -567,7 +567,7 @@ const PodMetrics: React.FC<PodMetricsProps> = ({ obj }) => {
                 ariaChartLinkLabel={t('public~View in query browser')}
                 humanize={humanizeCpuCores}
                 namespace={obj.metadata.namespace}
-                query={`sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{pod='${obj.metadata.name}',namespace='${obj.metadata.namespace}'})  BY (cluster,namespace,pod,prometheus)`}
+                query={`sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{pod='${obj.metadata.name}',namespace='${obj.metadata.namespace}'})  BY (cluster,namespace,pod,prometheus)`}
                 // query={`pod:container_cpu_usage:sum{pod='${obj.metadata.name}',namespace='${obj.metadata.namespace}'}`}
                 limitQuery={`sum(kube_pod_container_resource_limits{resource='cpu',pod='${obj.metadata.name}',namespace='${obj.metadata.namespace}'})`}
                 // limitQuery={`sum(kube_pod_resource_limit{resource='cpu',pod='${obj.metadata.name}',namespace='${obj.metadata.namespace}'})`}

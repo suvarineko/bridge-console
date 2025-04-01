@@ -21,7 +21,7 @@ export enum ProjectQueries {
 const queries = {
   [ProjectQueries.CPU_USAGE]: _.template(
     // `namespace:container_cpu_usage:sum{namespace='<%= project %>'}`,
-    `sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{namespace='<%= project %>'}) BY (cluster,namespace,prometheus)`,
+    `sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{namespace='<%= project %>'}) BY (cluster,namespace,prometheus)`,
   ),
   [ProjectQueries.CPU_REQUESTS]: _.template(
     `sum(kube_pod_resource_request{resource="cpu", namespace="<%= project %>"}) by (namespace)`,
@@ -50,7 +50,7 @@ const queries = {
 
 const top25Queries = {
   [ProjectQueries.PODS_BY_CPU]: _.template(
-    `topk(25, sort_desc(sum(avg_over_time(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{container!="",pod!="",namespace='<%= project %>'}[5m])) BY (pod, namespace)))`,
+    `topk(25, sort_desc(sum(avg_over_time(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{container!="",pod!="",namespace='<%= project %>'}[5m])) BY (pod, namespace)))`,
   ),
   [ProjectQueries.PODS_BY_MEMORY]: _.template(
     `topk(25, sort_desc(sum(avg_over_time(container_memory_working_set_bytes{container="",pod!="",namespace='<%= project %>'}[5m])) BY (pod, namespace)))`,

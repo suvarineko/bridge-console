@@ -196,7 +196,7 @@ const BuildMetrics = ({ obj }) => {
             <CardBody className="resource-metrics-dashboard__card-body">
               <Area
                 humanize={humanizeCpuCores}
-                query={`sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{pod='${podName}',namespace='${namespace}'}) BY (cluster,namespace,pod,prometheus)`}
+                query={`sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{pod='${podName}',namespace='${namespace}'}) BY (cluster,namespace,pod,prometheus)`}
                 {...areaProps}
               />
             </CardBody>

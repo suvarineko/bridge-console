@@ -38,7 +38,7 @@ const top25Queries = {
     `
       topk(25, sort_desc(
         (
-          sum(avg_over_time(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{container!="",pod!=""}[5m])) BY (pod, namespace)
+          sum(avg_over_time(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{container!="",pod!=""}[5m])) BY (pod, namespace)
           *
           on(pod,namespace) group_left(node) (node_namespace_pod:kube_pod_info:)
         )
@@ -173,7 +173,7 @@ const top25Queries = {
       topk(25, sort_desc(
         sum by (namespace) (
           (
-            sum(avg_over_time(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{container!="",pod!=""}[5m])) BY (namespace, pod)
+            sum(avg_over_time(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{container!="",pod!=""}[5m])) BY (namespace, pod)
             *
             on(pod,namespace) group_left(node) (node_namespace_pod:kube_pod_info:)
           )
