@@ -838,6 +838,7 @@ type ClusterVersionSpec = {
   clusterID: string;
   desiredUpdate?: Release;
   upstream?: string;
+  bridgeBoxVersion: string;
 };
 
 export type ClusterVersionKind = {
