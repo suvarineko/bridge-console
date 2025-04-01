@@ -14,6 +14,8 @@ declare module '*.png' {
 
 declare interface Window {
   SERVER_FLAGS: {
+    monitoringNamespace: string;
+    dashboardsNamespace: string;
     alertManagerBaseURL: string;
     authDisabled: boolean;
     basePath: string;

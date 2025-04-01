@@ -30,36 +30,31 @@ import (
 const (
 	k8sInClusterCA          = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
 	k8sInClusterBearerToken = "/var/run/secrets/kubernetes.io/serviceaccount/token"
-
-	// Well-known location of the tenant aware Thanos service for OpenShift exposing the query and query_range endpoints. This is only accessible in-cluster.
-	// Thanos proxies requests to both cluster monitoring and user workload monitoring prometheus instances.
-	openshiftThanosTenancyHost = "thanos-querier.openshift-monitoring.svc:9092"
-
-	// Well-known location of the tenant aware Thanos service for OpenShift exposing the rules endpoint. This is only accessible in-cluster.
-	// Thanos proxies requests to the cluster monitoring and user workload monitoring prometheus instances as well as Thanos ruler instances.
-	openshiftThanosTenancyForRulesHost = "thanos-querier.openshift-monitoring.svc:9093"
-
-	// Well-known location of the Thanos service for OpenShift. This is only accessible in-cluster.
-	// This is used for non-tenant global query requests
-	// proxying to both cluster monitoring and user workload monitoring prometheus instances.
-	openshiftThanosHost = "thanos-querier.openshift-monitoring.svc:9091"
-
-	// Well-known location of Alert Manager service for OpenShift. This is only accessible in-cluster.
-	openshiftAlertManagerHost = "alertmanager-main.openshift-monitoring.svc:9094"
-
-	// Well-known location of the tenant aware Alert Manager service for OpenShift. This is only accessible in-cluster.
-	openshiftAlertManagerTenancyHost = "alertmanager-main.openshift-monitoring.svc:9092"
-
-	// Well-known location of metering service for OpenShift. This is only accessible in-cluster.
 	openshiftMeteringHost = "reporting-operator.openshift-metering.svc:8080"
-
-	// Well-known location of the GitOps service. This is only accessible in-cluster
 	openshiftGitOpsHost = "cluster.openshift-gitops.svc:8080"
-
 	clusterManagementURL = "https://api.openshift.com/"
 )
 
 func main() {
+	// Well-known location of the tenant aware Thanos service for OpenShift exposing the query and query_range endpoints. This is only accessible in-cluster.
+	// Thanos proxies requests to both cluster monitoring and user workload monitoring prometheus instances.
+	openshiftThanosTenancyHost := ""
+
+	// Well-known location of the tenant aware Thanos service for OpenShift exposing the rules endpoint. This is only accessible in-cluster.
+	// Thanos proxies requests to the cluster monitoring and user workload monitoring prometheus instances as well as Thanos ruler instances.
+	openshiftThanosTenancyForRulesHost := ""
+
+	// Well-known location of the Thanos service for OpenShift. This is only accessible in-cluster.
+	// This is used for non-tenant global query requests
+	// proxying to both cluster monitoring and user workload monitoring prometheus instances.
+	openshiftThanosHost := ""
+
+	// Well-known location of Alert Manager service for OpenShift. This is only accessible in-cluster.
+	openshiftAlertManagerHost := ""
+
+	// Well-known location of the tenant aware Alert Manager service for OpenShift. This is only accessible in-cluster.
+	openshiftAlertManagerTenancyHost := ""
+
 	fs := flag.NewFlagSet("bridge", flag.ExitOnError)
 	klog.InitFlags(fs)
 	defer klog.Flush()
@@ -115,6 +110,8 @@ func main() {
 	fStatuspageID := fs.String("statuspage-id", "", "Unique ID assigned by statuspage.io page that provides status info.")
 	fDocumentationBaseURL := fs.String("documentation-base-url", "", "The base URL for documentation links.")
 
+	fMonitoringNamespace := fs.String("monitoring-namespace", "", "Namespace of prometheus monitoring stack.")
+	fDashboardsNamespace := fs.String("dashboards-namespace", "", "Namespace where to seek dashboards configmaps for embedded cluster observability.")
 	fAlermanagerPublicURL := fs.String("alermanager-public-url", "", "Public URL of the cluster's AlertManager server.")
 	fGrafanaPublicURL := fs.String("grafana-public-url", "", "Public URL of the cluster's Grafana server.")
 	fPrometheusPublicURL := fs.String("prometheus-public-url", "", "Public URL of the cluster's Prometheus server.")
@@ -192,7 +189,15 @@ func main() {
 	if *fThanosPublicURL != "" {
 		thanosPublicURL = bridge.ValidateFlagIsURL("thanos-public-url", *fThanosPublicURL)
 	}
-
+	monitoringNamespace := *fMonitoringNamespace
+	if *fMonitoringNamespace != "" {
+		monitoringNamespace = *fMonitoringNamespace
+	}
+	dashboardsNamespace := *fDashboardsNamespace
+	if *fDashboardsNamespace != "" {
+		dashboardsNamespace = *fDashboardsNamespace
+	}
+	
 	branding := *fBranding
 	if branding == "origin" {
 		branding = "okd"
@@ -250,6 +255,8 @@ func main() {
 		ControlPlaneTopology:      *fControlPlaneTopology,
 		StatuspageID:              *fStatuspageID,
 		DocumentationBaseURL:      documentationBaseURL,
+		MonitoringNamespace:       monitoringNamespace,
+		DashboardsNamespace:       dashboardsNamespace,
 		AlertManagerPublicURL:     alertManagerPublicURL,
 		GrafanaPublicURL:          grafanaPublicURL,
 		PrometheusPublicURL:       prometheusPublicURL,
@@ -269,6 +276,12 @@ func main() {
 		Telemetry:                 telemetryFlags,
 		ReleaseVersion:            *fReleaseVersion,
 	}
+
+	openshiftThanosTenancyHost = "thanos-querier." + srv.MonitoringNamespace + ".svc:9092"
+	openshiftThanosTenancyForRulesHost = "thanos-querier." + srv.MonitoringNamespace + ".svc:9093"
+	openshiftThanosHost = "thanos-querier." + srv.MonitoringNamespace + ".svc:9091"
+	openshiftAlertManagerHost = "monitoring-alertmanager." + srv.MonitoringNamespace + ".svc:9094"
+	openshiftAlertManagerTenancyHost = "monitoring-alertmanager." + srv.MonitoringNamespace + ".svc:9092"
 
 	managedClusterConfigs := []serverconfig.ManagedClusterConfig{}
 	if *fManagedClusterConfigs != "" {
@@ -695,7 +708,7 @@ func main() {
 		&url.URL{
 			Scheme: k8sEndpoint.Scheme,
 			Host:   k8sEndpoint.Host,
-			Path:   k8sEndpoint.Path + "/api/v1/namespaces/openshift-monitoring/configmaps",
+			Path:   k8sEndpoint.Path + "/api/v1/namespaces/" + srv.DashboardsNamespace + "/configmaps",
 			// Path:   k8sEndpoint.Path + "/api/v1/namespaces/openshift-config-managed/configmaps",
 			RawQuery: url.Values{
 				"labelSelector": {"console.openshift.io/dashboard=true"},

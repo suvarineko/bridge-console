@@ -57,6 +57,8 @@ type ServingInfo struct {
 
 // Monitoring holds URLs for monitoring related services
 type MonitoringInfo struct {
+	MonitoringNamespace   string `yaml:"monitoringNamespace,omitempty"`
+	DashboardsNamespace   string `yaml:"dashboardsNamespace,omitempty"`
 	AlertmanagerPublicURL string `yaml:"alertmanagerPublicURL,omitempty"`
 	GrafanaPublicURL      string `yaml:"grafanaPublicURL,omitempty"`
 	PrometheusPublicURL   string `yaml:"prometheusPublicURL,omitempty"`

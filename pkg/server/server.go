@@ -91,6 +91,8 @@ type jsGlobals struct {
 	CustomLogoURL              string                     `json:"customLogoURL"`
 	StatuspageID               string                     `json:"statuspageID"`
 	DocumentationBaseURL       string                     `json:"documentationBaseURL"`
+	MonitoringNamespace        string                     `json:"monitoringNamespace"`
+	DashboardsNamespace        string                     `json:"dashboardsNamespace"`
 	AlertManagerPublicURL      string                     `json:"alertManagerPublicURL"`
 	GrafanaPublicURL           string                     `json:"grafanaPublicURL"`
 	PrometheusPublicURL        string                     `json:"prometheusPublicURL"`
@@ -157,6 +159,8 @@ type Server struct {
 	GOARCH                             string
 	GOOS                               string
 	// Monitoring and Logging related URLs
+	MonitoringNamespace       string
+	DashboardsNamespace       string
 	AlertManagerPublicURL     *url.URL
 	GrafanaPublicURL          *url.URL
 	PrometheusPublicURL       *url.URL
@@ -696,6 +700,8 @@ func (s *Server) indexHandler(w http.ResponseWriter, r *http.Request) {
 		StatuspageID:               s.StatuspageID,
 		InactivityTimeout:          s.InactivityTimeout,
 		DocumentationBaseURL:       s.DocumentationBaseURL.String(),
+		MonitoringNamespace:        s.MonitoringNamespace,
+		DashboardsNamespace:        s.DashboardsNamespace,
 		AlertManagerPublicURL:      s.AlertManagerPublicURL.String(),
 		GrafanaPublicURL:           s.GrafanaPublicURL.String(),
 		PrometheusPublicURL:        s.PrometheusPublicURL.String(),

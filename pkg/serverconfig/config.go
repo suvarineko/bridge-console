@@ -253,6 +253,12 @@ func addProviders(fs *flag.FlagSet, providers *Providers) {
 }
 
 func addMonitoringInfo(fs *flag.FlagSet, monitoring *MonitoringInfo) {
+	if monitoring.MonitoringNamespace != "" {
+		fs.Set("monitoring-namespace", monitoring.MonitoringNamespace)
+	}
+	if monitoring.DashboardsNamespace != "" {
+		fs.Set("dashboards-namespace", monitoring.DashboardsNamespace)
+	}
 	if monitoring.AlertmanagerPublicURL != "" {
 		fs.Set("alermanager-public-url", monitoring.AlertmanagerPublicURL)
 	}
