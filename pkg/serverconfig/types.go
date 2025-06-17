@@ -81,6 +81,7 @@ type Auth struct {
 	OAuthEndpointCAFile      string `yaml:"oauthEndpointCAFile,omitempty"`
 	LogoutRedirect           string `yaml:"logoutRedirect,omitempty"`
 	InactivityTimeoutSeconds int    `yaml:"inactivityTimeoutSeconds,omitempty"`
+	WellKnownURL             string `yaml:"wellKnownURL,omitempty"`
 }
 
 // Customization holds configuration such as what logo to use.
@@ -164,6 +165,7 @@ type ManagedClusterOAuthConfig struct {
 	ClientID     string `json:"clientID" yaml:"clientID"`
 	ClientSecret string `json:"clientSecret" yaml:"clientSecret"`
 	CAFile       string `json:"caFile" yaml:"caFile"`
+	WellKnownURL string `json:"wellKnownURL" yaml:"wellKnownURL"`
 }
 
 // ManagedClusterConfig enables proxying to an ACM managed cluster

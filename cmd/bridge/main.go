@@ -77,6 +77,7 @@ func main() {
 	fUserAuthOIDCClientSecret := fs.String("user-auth-oidc-client-secret", "", "The OIDC OAuth2 Client Secret.")
 	fUserAuthOIDCClientSecretFile := fs.String("user-auth-oidc-client-secret-file", "", "File containing the OIDC OAuth2 Client Secret.")
 	fUserAuthLogoutRedirect := fs.String("user-auth-logout-redirect", "", "Optional redirect URL on logout needed for some single sign-on identity providers.")
+	fWellKnownURL := fs.String("well-known-url", "", "Custom well-known URL for OAuth server discovery.")
 
 	fInactivityTimeout := fs.Int("inactivity-timeout", 0, "Number of seconds, after which user will be logged out if inactive. Ignored if less than 300 seconds (5 minutes).")
 	fCookieDomain := fs.String("cookie-domain", "", "Domain attribute for cookies. If set to a domain starting with a dot (e.g. \".example.com\"), the cookie will be valid for all subdomains of that domain.")
@@ -617,6 +618,7 @@ func main() {
 			RedirectURL:  proxy.SingleJoiningSlash(srv.BaseURL.String(), server.AuthLoginCallbackEndpoint),
 			Scope:        scopes,
 			CookieDomain: *fCookieDomain,
+			WellKnownURL: *fWellKnownURL,
 
 			// Use the k8s CA file for OpenShift OAuth metadata discovery.
 			// This might be different than IssuerCA.
@@ -662,6 +664,7 @@ func main() {
 					RedirectURL:  proxy.SingleJoiningSlash(srv.BaseURL.String(), fmt.Sprintf("%s/%s", server.AuthLoginCallbackEndpoint, managedCluster.Name)),
 					Scope:        scopes,
 					CookieDomain: *fCookieDomain,
+					WellKnownURL: managedCluster.OAuth.WellKnownURL,
 
 					// Use the k8s CA file for OpenShift OAuth metadata discovery.
 					// This might be different than IssuerCA.

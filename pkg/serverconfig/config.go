@@ -244,6 +244,10 @@ func addAuth(fs *flag.FlagSet, auth *Auth) {
 	if auth.InactivityTimeoutSeconds != 0 {
 		fs.Set("inactivity-timeout", strconv.Itoa(auth.InactivityTimeoutSeconds))
 	}
+
+	if auth.WellKnownURL != "" {
+		fs.Set("well-known-url", auth.WellKnownURL)
+	}
 }
 
 func addProviders(fs *flag.FlagSet, providers *Providers) {

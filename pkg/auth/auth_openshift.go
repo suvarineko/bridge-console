@@ -33,6 +33,7 @@ type openShiftConfig struct {
 	secureCookies bool
 	clusterName   string
 	cookieDomain  string
+	wellKnownURL  string
 }
 
 func validateAbsURL(value string) error {
@@ -51,7 +52,10 @@ func validateAbsURL(value string) error {
 func newOpenShiftAuth(ctx context.Context, c *openShiftConfig) (oauth2.Endpoint, *openShiftAuth, error) {
 	// Use metadata discovery to determine the OAuth2 token and authorization URL.
 	// https://access.redhat.com/documentation/en-us/openshift_container_platform/4.9/html/authentication_and_authorization/configuring-internal-oauth#oauth-server-metadata_configuring-internal-oauth
-	wellKnownURL := strings.TrimSuffix(c.issuerURL, "/") + "/.well-known/oauth-authorization-server"
+	wellKnownURL := c.wellKnownURL
+	if wellKnownURL == "" {
+		wellKnownURL = strings.TrimSuffix(c.issuerURL, "/") + "/.well-known/oauth-authorization-server"
+	}
 
 	req, err := http.NewRequest(http.MethodGet, wellKnownURL, nil)
 	if err != nil {

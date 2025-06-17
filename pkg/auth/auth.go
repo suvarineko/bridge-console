@@ -103,6 +103,7 @@ type Config struct {
 	ClientID     string
 	ClientSecret string
 	Scope        []string
+	WellKnownURL  string
 
 	// K8sCA is required for OpenShift OAuth metadata discovery. This is the CA
 	// used to talk to the master, which might be different than the issuer CA.
@@ -204,6 +205,7 @@ func NewAuthenticator(ctx context.Context, c *Config) (*Authenticator, error) {
 					secureCookies: c.SecureCookies,
 					clusterName:   c.ClusterName,
 					cookieDomain:  c.CookieDomain,
+					wellKnownURL:  c.WellKnownURL,
 				})
 			}
 		default:
