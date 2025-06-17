@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"golang.org/x/oauth2"
+	"k8s.io/klog"
 
 	"github.com/openshift/console/pkg/proxy"
 	"github.com/openshift/console/pkg/serverutils"
@@ -132,6 +133,10 @@ func (o *openShiftAuth) login(w http.ResponseWriter, token *oauth2.Token) (*logi
 	if token.AccessToken == "" {
 		return nil, fmt.Errorf("token response did not contain an access token %#v", token)
 	}
+	
+	// Debug: Log the token format to understand the issue
+	klog.V(2).Infof("OpenShift OAuth token received: %s", token.AccessToken)
+	
 	ls := &loginState{
 		// Not clear if there's another way to fill in information like the user's name.
 		rawToken: token.AccessToken,
@@ -203,6 +208,9 @@ func getOpenShiftUser(r *http.Request) (*User, error) {
 	if cookie.Value == "" {
 		return nil, fmt.Errorf("unauthenticated, no value for cookie %s", cookieName)
 	}
+
+	// Debug: Log the token from cookie
+	klog.V(2).Infof("Token from cookie %s: %s", cookieName, cookie.Value)
 
 	return &User{
 		Token: cookie.Value,

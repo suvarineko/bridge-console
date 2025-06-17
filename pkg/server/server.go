@@ -319,7 +319,10 @@ func (s *Server) HTTPHandler() http.Handler {
 				return
 			}
 
-			r.Header.Set("Authorization", fmt.Sprintf("Bearer %s", user.Token))
+			// Debug: Log the token being sent to k8s API
+			authHeader := fmt.Sprintf("Bearer %s", user.Token)
+			klog.V(2).Infof("Sending to k8s API with Authorization: %s", authHeader)
+			r.Header.Set("Authorization", authHeader)
 			k8sProxy.ServeHTTP(w, r)
 		})),
 	)
