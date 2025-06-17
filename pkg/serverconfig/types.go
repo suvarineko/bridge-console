@@ -82,6 +82,7 @@ type Auth struct {
 	LogoutRedirect           string `yaml:"logoutRedirect,omitempty"`
 	InactivityTimeoutSeconds int    `yaml:"inactivityTimeoutSeconds,omitempty"`
 	WellKnownURL             string `yaml:"wellKnownURL,omitempty"`
+	CookieDomain             string `yaml:"cookieDomain,omitempty"`
 }
 
 // Customization holds configuration such as what logo to use.

@@ -248,6 +248,10 @@ func addAuth(fs *flag.FlagSet, auth *Auth) {
 	if auth.WellKnownURL != "" {
 		fs.Set("well-known-url", auth.WellKnownURL)
 	}
+
+	if auth.CookieDomain != "" {
+		fs.Set("cookie-domain", auth.CookieDomain)
+	}
 }
 
 func addProviders(fs *flag.FlagSet, providers *Providers) {
