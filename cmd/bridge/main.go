@@ -81,6 +81,7 @@ func main() {
 
 	fInactivityTimeout := fs.Int("inactivity-timeout", 0, "Number of seconds, after which user will be logged out if inactive. Ignored if less than 300 seconds (5 minutes).")
 	fCookieDomain := fs.String("cookie-domain", "", "Domain attribute for cookies. If set to a domain starting with a dot (e.g. \".example.com\"), the cookie will be valid for all subdomains of that domain.")
+	fCookiePath := fs.String("cookie-path", "/api/", "Path attribute for cookies. Default: /api/")
 
 	fK8sMode := fs.String("k8s-mode", "in-cluster", "in-cluster | off-cluster")
 	fK8sModeOffClusterEndpoint := fs.String("k8s-mode-off-cluster-endpoint", "", "URL of the Kubernetes API server.")
@@ -156,6 +157,10 @@ func main() {
 		bridge.FlagFatalf("base-path", "value must start and end with slash")
 	}
 	baseURL.Path = *fBasePath
+
+	if !strings.HasPrefix(*fCookiePath, "/") || !strings.HasSuffix(*fCookiePath, "/") {
+		bridge.FlagFatalf("cookie-path", "value must start and end with slash")
+	}
 
 	caCertFilePath := *fCAFile
 	if *fK8sMode == "in-cluster" {
@@ -577,8 +582,8 @@ func main() {
 			authLoginErrorEndpoint   = proxy.SingleJoiningSlash(srv.BaseURL.String(), server.AuthLoginErrorEndpoint)
 			authLoginSuccessEndpoint = proxy.SingleJoiningSlash(srv.BaseURL.String(), server.AuthLoginSuccessEndpoint)
 			oidcClientSecret         = *fUserAuthOIDCClientSecret
-			// Abstraction leak required by NewAuthenticator. We only want the browser to send the auth token for paths starting with basePath/api.
-			cookiePath  = proxy.SingleJoiningSlash(srv.BaseURL.Path, "/api/")
+			// Abstraction leak required by NewAuthenticator. We only want the browser to send the auth token for paths starting with basePath/cookie-path.
+			cookiePath  = proxy.SingleJoiningSlash(srv.BaseURL.Path, *fCookiePath)
 			refererPath = srv.BaseURL.String()
 		)
 
