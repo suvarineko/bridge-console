@@ -309,7 +309,7 @@ func newUnstartedAuthenticator(c *Config) (*Authenticator, error) {
 		cookiePath:    c.CookiePath,
 		refererURL:    refUrl,
 		secureCookies: c.SecureCookies,
-		cookieDomain:  c.CookieDomain,
+		cookieDomain:  "", // Don't use configured domain for CSRF/login-state cookies
 	}, nil
 }
 
