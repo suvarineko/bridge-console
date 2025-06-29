@@ -44,13 +44,23 @@ for local installs, or native Kubernetes clusters.
 
 #### Cross-domain Cookies
 
-When deploying the console across multiple domains or subdomains, you can configure session cookies to be valid across all of them by setting the `-cookie-domain` flag. For instance, to allow the session cookie to be valid across all subdomains of example.com, you would set `-cookie-domain=.example.com` when starting the bridge.
+When deploying the console across multiple domains or subdomains, you can configure the session cookie to be valid across all of them by setting the `-cookie-domain` flag. For instance, to allow the session cookie to be valid across all subdomains of example.com, you would set `-cookie-domain=.example.com` when starting the bridge.
 
 ```
 ./bin/bridge -cookie-domain=.example.com
 ```
 
-This will make the `openshift-session-token` cookie valid for all subdomains of example.com.
+This will make the `openshift-session-token` cookie valid for all subdomains of example.com. Other cookies (CSRF and login-state) are restricted to the console host for security.
+
+#### Cookie Path Configuration
+
+You can configure the path attribute for the `openshift-session-token` cookie by setting the `-cookie-path` flag. The default path is `/api/`, which restricts the cookie to API endpoints only. For example, to set the cookie path to the root path:
+
+```
+./bin/bridge -cookie-path=/
+```
+
+The cookie path must start and end with a forward slash. Common values include `/api/` (default), `/`, or `/console/`.
 
 #### OpenShift (no authentication)
 
